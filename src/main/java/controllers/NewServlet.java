@@ -21,6 +21,9 @@ public class NewServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // CSRF対策
+        request.setAttribute("_token", request.getSession().getId());
+
+        // おまじないとしてのインスタンスを生成
         request.setAttribute("tasks", new Tasks());
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/new.jsp");
