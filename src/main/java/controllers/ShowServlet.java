@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -14,25 +13,26 @@ import javax.servlet.http.HttpServletResponse;
 import models.Tasks;
 import utils.DBUtil;
 
-@WebServlet("/index")
-public class indexServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+@WebServlet("/show")
+public class ShowServlet extends HttpServlet {
+        private static final long serialVersionUID = 1L;
 
-    public indexServlet() {
+    public ShowServlet() {
         super();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
-        List<Tasks> tasks = em.createNamedQuery("getAllTasks", Tasks.class).getResultList();
+        // 該当のIDのメッセージ1件のみをデータベースから取得
+        Tasks m = em.find(Tasks.class, Integer.parseInt(request.getParameter("id")));
 
         em.close();
 
-        request.setAttribute("tasks", tasks);
+        // メッセージデータをリクエストスコープにセットしてshow.jspを呼び出す
+        request.setAttribute("tasks", m);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/show.jsp");
         rd.forward(request, response);
     }
 }
-
